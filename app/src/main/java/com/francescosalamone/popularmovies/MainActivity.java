@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         MovieDbApiKey = getString(R.string.apiV3);
 
+        //I check, before the HTTP request, if we have an internet connection available
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
