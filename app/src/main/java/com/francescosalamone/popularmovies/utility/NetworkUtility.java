@@ -79,5 +79,4 @@ public class NetworkUtility {
             urlConnection.disconnect();
         }
     }
-
 }
