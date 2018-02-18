@@ -1,7 +1,9 @@
 package com.francescosalamone.popularmovies.utility;
 
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
+import com.francescosalamone.popularmovies.MainActivity;
 import com.francescosalamone.popularmovies.model.Movie;
 
 import org.json.JSONArray;
@@ -29,23 +31,26 @@ public class JsonUtility {
         final String MOVIE_RESULTS = "results";
 
         JSONObject movieJson = new JSONObject(json);
-        JSONArray resultsAsArray = movieJson.optJSONArray(MOVIE_RESULTS);
+        if(movieJson.has(MOVIE_RESULTS)){
+            JSONArray resultsAsArray = movieJson.optJSONArray(MOVIE_RESULTS);
 
-        List<Movie> movieAsList = new ArrayList<Movie>();
+            List<Movie> movieAsList = new ArrayList<Movie>();
 
-        for(int i = 0; i < resultsAsArray.length(); i++){
-            JSONObject resultsObj = new JSONObject(resultsAsArray.getString(i));
-            Movie movie = new Movie();
-            movie.setOriginalTitle(resultsObj.getString(MOVIE_TITLE));
-            movie.setPosterPath(resultsObj.getString(MOVIE_POSTER_PATH));
-            movie.setMovieOverview(resultsObj.getString(MOVIE_OVERVIEW));
-            movie.setUsersRating(resultsObj.getDouble(MOVIE_RATING));
-            movie.setReleaseDate(resultsObj.getString(MOVIE_RELEASE_DATE));
+            for(int i = 0; i < resultsAsArray.length(); i++){
+                JSONObject resultsObj = new JSONObject(resultsAsArray.getString(i));
+                Movie movie = new Movie();
+                movie.setOriginalTitle(resultsObj.optString(MOVIE_TITLE));
+                movie.setPosterPath(resultsObj.optString(MOVIE_POSTER_PATH));
+                movie.setMovieOverview(resultsObj.optString(MOVIE_OVERVIEW));
+                movie.setUsersRating(resultsObj.optDouble(MOVIE_RATING));
+                movie.setReleaseDate(resultsObj.optString(MOVIE_RELEASE_DATE));
 
-            movieAsList.add(movie);
+                movieAsList.add(movie);
+            }
+
+            return movieAsList;
+        } else {
+            return null;
         }
-
-
-        return movieAsList;
     }
 }

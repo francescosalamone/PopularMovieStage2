@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.JsonWriter;
-import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.francescosalamone.popularmovies.model.Movie;
@@ -22,7 +20,6 @@ import com.francescosalamone.popularmovies.utility.JsonUtility;
 import com.francescosalamone.popularmovies.utility.NetworkUtility;
 import com.francescosalamone.popularmovies.utility.PosterAdapter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
