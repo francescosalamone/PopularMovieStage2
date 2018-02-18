@@ -11,6 +11,11 @@
         android:layout_height="match_parent"
         tools:context="com.francescosalamone.popularmovies.MainActivity">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_posters"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </GridLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>
