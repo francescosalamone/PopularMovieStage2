@@ -4,6 +4,9 @@ package com.francescosalamone.popularmovies;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -13,6 +16,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.francescosalamone.popularmovies.model.Movie;
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mPosterAdapter = new PosterAdapter( this);
         mRecyclerView.setAdapter(mPosterAdapter);
 
+        configureBottomNav();
+
 
         MovieDbApiKey = getString(R.string.apiV3);
 
@@ -67,6 +73,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         updateMovieList();
     }
 
+    private void configureBottomNav(){
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation_bar);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_top_rated:
+                        sortCode = 1;
+                        break;
+                    case R.id.action_popular:
+                        sortCode = 0;
+                    default:
+                        break;
+                }
+                updateMovieList();
+                return true;
+            }
+        });
+    }
+
     private void updateMovieList(){
         //I check, before the HTTP request, if we have an internet connection available
         ConnectivityManager cm =
@@ -77,7 +104,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 activeNetwork.isConnectedOrConnecting();
 
         if(isConnected) {
-            getSupportLoaderManager().initLoader(MOVIE_LOADER, null, this);
+            try {
+                if (getSupportLoaderManager().getLoader(MOVIE_LOADER).isStarted())
+                    getSupportLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+            } catch (Exception e){
+                e.printStackTrace();
+            } finally {
+                getSupportLoaderManager().initLoader(MOVIE_LOADER, null, this);
+            }
             swipeRefreshLayout.setRefreshing(false);
         }
         else {

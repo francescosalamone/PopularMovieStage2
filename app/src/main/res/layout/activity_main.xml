@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <GridLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.francescosalamone.popularmovies.MainActivity">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_posters"
+        <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingBottom="50dp"
+            tools:context="com.francescosalamone.popularmovies.MainActivity">
 
-    </GridLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_posters"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </GridLayout>
+
+        <android.support.design.widget.BottomNavigationView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/navigation_bar"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            app:itemTextColor="@color/selector_navbar_bottom"
+            app:itemIconTint="@color/selector_navbar_bottom"
+            app:menu="@menu/bottom_bar_items"/>
+
+    </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>
