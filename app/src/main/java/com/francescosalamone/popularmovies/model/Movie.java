@@ -1,12 +1,15 @@
 package com.francescosalamone.popularmovies.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 /**
  * Created by Alpha on 18/02/2018.
  */
 
-public class Movie {
+public class Movie implements Parcelable{
     private String originalTitle;
     private String posterPath;
     private String movieOverview;
@@ -24,6 +27,26 @@ public class Movie {
         this.usersRating = usersRating;
         this.releaseDate = releaseDate;
     }
+
+    protected Movie(Parcel in) {
+        originalTitle = in.readString();
+        posterPath = in.readString();
+        movieOverview = in.readString();
+        usersRating = in.readDouble();
+        releaseDate = in.readString();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getOriginalTitle(){
         return originalTitle;
@@ -63,5 +86,19 @@ public class Movie {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(originalTitle);
+        parcel.writeString(posterPath);
+        parcel.writeString(movieOverview);
+        parcel.writeDouble(usersRating);
+        parcel.writeString(releaseDate);
     }
 }
