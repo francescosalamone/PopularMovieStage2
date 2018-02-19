@@ -1,6 +1,8 @@
 package com.francescosalamone.popularmovies.utility;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -10,10 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.francescosalamone.popularmovies.DetailActivity;
+import com.francescosalamone.popularmovies.MainActivity;
 import com.francescosalamone.popularmovies.R;
 import com.francescosalamone.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -50,7 +55,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
         private ViewHolder(View itemView) {
             super(itemView);
 
-            posterImageView = itemView.findViewById(R.id.iw_poster);
+            posterImageView = itemView.findViewById(R.id.iv_poster);
             itemView.setOnClickListener(this);
         }
 
@@ -58,8 +63,15 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
         public void onClick(View view) {
             int clicked = getAdapterPosition();
             clickListener.onItemClick(clicked);
-            Toast.makeText(view.getContext(), "Item clicked #"+clicked, Toast.LENGTH_SHORT).show();
+
+            launchDetailActivity(clicked, posterImageView.getContext());
         }
+    }
+
+    private void launchDetailActivity(int position, Context context){
+        Intent intent = new Intent(context, DetailActivity.class);
+        intent.putExtra("Movie", movies.get(position));
+        context.startActivity(intent);
 
     }
 
