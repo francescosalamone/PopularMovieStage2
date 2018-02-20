@@ -1,8 +1,10 @@
 package com.francescosalamone.popularmovies;
 
 import android.content.Intent;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,11 +16,11 @@ public class DetailActivity extends AppCompatActivity {
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w342";
 
-    private ImageView poster_iv;
-    private TextView title_tv;
-    private TextView overview_tv;
-    private TextView rating_tv;
-    private TextView releaseDate_tv;
+    private ImageView posterIv;
+    private TextView titleTv;
+    private TextView overviewTv;
+    private TextView ratingTv;
+    private TextView releaseDateTv;
 
     private Movie movie = null;
 
@@ -27,11 +29,14 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        poster_iv = findViewById(R.id.iv_poster);
-        title_tv = findViewById(R.id.title_tv);
-        overview_tv = findViewById(R.id.overview_tv);
-        rating_tv = findViewById(R.id.rating_tv);
-        releaseDate_tv = findViewById(R.id.release_date_tv);
+        posterIv = findViewById(R.id.iv_poster);
+        titleTv = findViewById(R.id.title_tv);
+        overviewTv = findViewById(R.id.overview_tv);
+        ratingTv = findViewById(R.id.rating_tv);
+        releaseDateTv = findViewById(R.id.release_date_tv);
+
+        //Setup NavigationBar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         if(intent == null){
@@ -47,6 +52,16 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void populateUI(Movie movie){
         String posterPath = movie.getPosterPath();
 
@@ -54,12 +69,12 @@ public class DetailActivity extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(posterUrl)
-                .into(poster_iv);
+                .into(posterIv);
 
-        title_tv.setText(movie.getOriginalTitle());
-        overview_tv.setText(movie.getMovieOverview());
-        rating_tv.setText(String.valueOf(movie.getUsersRating()));
-        releaseDate_tv.setText(String.valueOf(movie.getReleaseDate()));
+        titleTv.setText(movie.getOriginalTitle());
+        overviewTv.setText(movie.getMovieOverview());
+        ratingTv.setText(String.valueOf(movie.getUsersRating()));
+        releaseDateTv.setText(String.valueOf(movie.getReleaseDate()));
 
     }
 }
