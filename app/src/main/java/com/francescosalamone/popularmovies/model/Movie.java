@@ -3,7 +3,6 @@ package com.francescosalamone.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
 
 /**
  * Created by Alpha on 18/02/2018.
