@@ -1,7 +1,6 @@
 package com.francescosalamone.popularmovies;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -10,20 +9,18 @@ import android.widget.TextView;
 import com.francescosalamone.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.sql.Date;
-
 public class DetailActivity extends AppCompatActivity {
 
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w342";
 
-    ImageView poster_iv;
-    TextView title_tv;
-    TextView overview_tv;
-    TextView rating_tv;
-    TextView releaseDate_tv;
+    private ImageView poster_iv;
+    private TextView title_tv;
+    private TextView overview_tv;
+    private TextView rating_tv;
+    private TextView releaseDate_tv;
 
-    Movie movie = null;
+    private Movie movie = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
