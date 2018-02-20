@@ -2,15 +2,12 @@ package com.francescosalamone.popularmovies;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -36,10 +33,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         , PosterAdapter.ItemClickListener {
 
     private String MovieDbApiKey;
-    static final int MOVIE_LOADER = 1502;
+    private static final int MOVIE_LOADER = 1502;
     private int sortCode =0;
 
-    private RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -49,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = findViewById(R.id.rv_posters);
+        RecyclerView mRecyclerView = findViewById(R.id.rv_posters);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -148,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<String> loader, String httpResult) {
 
-        List<Movie> moviesAsList = new ArrayList<Movie>();
+        List<Movie> moviesAsList = new ArrayList<>();
         try {
             moviesAsList = JsonUtility.parseMovieJson(httpResult);
         } catch (JSONException e){
