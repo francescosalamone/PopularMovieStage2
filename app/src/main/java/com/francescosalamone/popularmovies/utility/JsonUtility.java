@@ -1,9 +1,5 @@
 package com.francescosalamone.popularmovies.utility;
 
-import android.support.annotation.NonNull;
-import android.widget.Toast;
-
-import com.francescosalamone.popularmovies.MainActivity;
 import com.francescosalamone.popularmovies.model.Movie;
 
 import org.json.JSONArray;
@@ -11,10 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by Alpha on 18/02/2018.
@@ -34,7 +27,7 @@ public class JsonUtility {
         if(movieJson.has(MOVIE_RESULTS)){
             JSONArray resultsAsArray = movieJson.optJSONArray(MOVIE_RESULTS);
 
-            List<Movie> movieAsList = new ArrayList<Movie>();
+            List<Movie> movieAsList = new ArrayList<>();
 
             for(int i = 0; i < resultsAsArray.length(); i++){
                 JSONObject resultsObj = new JSONObject(resultsAsArray.getString(i));

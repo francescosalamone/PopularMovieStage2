@@ -2,23 +2,18 @@ package com.francescosalamone.popularmovies.utility;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.francescosalamone.popularmovies.DetailActivity;
-import com.francescosalamone.popularmovies.MainActivity;
 import com.francescosalamone.popularmovies.R;
 import com.francescosalamone.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**

@@ -1,7 +1,7 @@
 # Popular Movie project
 
 
-The second excercise of the Android Developer Nanodegree Program by Udacity
+The second exercise of the Android Developer Nanodegree Program by Udacity
 
 ## Configuration
 Before install you should create the "theMovieDbAPI.xml" under the res\values folder.
