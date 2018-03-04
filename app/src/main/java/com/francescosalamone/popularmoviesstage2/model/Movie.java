@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmovies.model;
+package com.francescosalamone.popularmoviesstage2.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

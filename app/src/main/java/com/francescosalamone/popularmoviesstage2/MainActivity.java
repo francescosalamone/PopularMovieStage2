@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmovies;
+package com.francescosalamone.popularmoviesstage2;
 
 
 import android.content.Context;
@@ -18,10 +18,10 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.francescosalamone.popularmovies.model.Movie;
-import com.francescosalamone.popularmovies.utility.JsonUtility;
-import com.francescosalamone.popularmovies.utility.NetworkUtility;
-import com.francescosalamone.popularmovies.utility.PosterAdapter;
+import com.francescosalamone.popularmoviesstage2.model.Movie;
+import com.francescosalamone.popularmoviesstage2.utility.JsonUtility;
+import com.francescosalamone.popularmoviesstage2.utility.NetworkUtility;
+import com.francescosalamone.popularmoviesstage2.utility.PosterAdapter;
 
 import org.json.JSONException;
 

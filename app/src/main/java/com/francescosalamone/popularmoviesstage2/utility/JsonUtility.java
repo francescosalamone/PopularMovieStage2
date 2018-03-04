@@ -1,6 +1,6 @@
-package com.francescosalamone.popularmovies.utility;
+package com.francescosalamone.popularmoviesstage2.utility;
 
-import com.francescosalamone.popularmovies.model.Movie;
+import com.francescosalamone.popularmoviesstage2.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
