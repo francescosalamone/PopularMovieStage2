@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmovies.utility;
+package com.francescosalamone.popularmoviesstage2.utility;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.francescosalamone.popularmovies.DetailActivity;
-import com.francescosalamone.popularmovies.R;
-import com.francescosalamone.popularmovies.model.Movie;
+import com.francescosalamone.popularmoviesstage2.DetailActivity;
+import com.francescosalamone.popularmoviesstage2.R;
+import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 
 /**
  * Created by Alpha on 18/02/2018.

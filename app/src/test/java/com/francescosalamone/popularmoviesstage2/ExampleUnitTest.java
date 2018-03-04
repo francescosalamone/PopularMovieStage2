@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmovies;
+package com.francescosalamone.popularmoviesstage2;
 
 import org.junit.Test;
 

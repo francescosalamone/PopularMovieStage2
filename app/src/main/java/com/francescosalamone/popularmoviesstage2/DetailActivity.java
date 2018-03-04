@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmovies;
+package com.francescosalamone.popularmoviesstage2;
 
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.francescosalamone.popularmovies.model.Movie;
+import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {

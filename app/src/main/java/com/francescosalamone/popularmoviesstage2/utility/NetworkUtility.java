@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmovies.utility;
+package com.francescosalamone.popularmoviesstage2.utility;
 
 import android.net.Uri;
 
