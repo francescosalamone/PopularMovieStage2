@@ -1,7 +1,7 @@
-# Popular Movie project
+# Popular Movie Stage 2 project
 
 
-The second exercise of the Android Developer Nanodegree Program by Udacity
+The third exercise of the Android Developer Nanodegree Program by Udacity
 
 ## Configuration
 Before install you should write the api key on your gradle.properties under the root folder.
