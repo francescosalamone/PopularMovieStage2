@@ -20,6 +20,12 @@ android {
     repositories {
         mavenCentral()
     }
+
+    buildTypes.each{
+        it.buildConfigField 'String', 'apiV3', TheMovieDbApi
+    }
+
+    dataBinding.enabled = true
 }
 
 dependencies {

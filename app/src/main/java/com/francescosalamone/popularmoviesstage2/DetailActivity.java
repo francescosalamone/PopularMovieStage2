@@ -1,6 +1,7 @@
 package com.francescosalamone.popularmoviesstage2;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.francescosalamone.popularmoviesstage2.databinding.ActivityDetailBinding;
 import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -16,11 +18,7 @@ public class DetailActivity extends AppCompatActivity {
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w342";
 
-    private ImageView posterIv;
-    private TextView titleTv;
-    private TextView overviewTv;
-    private TextView ratingTv;
-    private TextView releaseDateTv;
+    ActivityDetailBinding mBinding;
 
     private Movie movie = null;
 
@@ -29,11 +27,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        posterIv = findViewById(R.id.iv_poster);
-        titleTv = findViewById(R.id.title_tv);
-        overviewTv = findViewById(R.id.overview_tv);
-        ratingTv = findViewById(R.id.rating_tv);
-        releaseDateTv = findViewById(R.id.release_date_tv);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
         //Setup NavigationBar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,12 +63,12 @@ public class DetailActivity extends AppCompatActivity {
 
         Picasso.with(this)
                 .load(posterUrl)
-                .into(posterIv);
+                .into(mBinding.ivPoster);
 
-        titleTv.setText(movie.getOriginalTitle());
-        overviewTv.setText(movie.getMovieOverview());
-        ratingTv.setText(String.valueOf(movie.getUsersRating()));
-        releaseDateTv.setText(String.valueOf(movie.getReleaseDate()));
+        mBinding.titleTv.setText(movie.getOriginalTitle());
+        mBinding.overviewTv.setText(movie.getMovieOverview());
+        mBinding.ratingTv.setText(String.valueOf(movie.getUsersRating()));
+        mBinding.releaseDateTv.setText(String.valueOf(movie.getReleaseDate()));
 
     }
 }

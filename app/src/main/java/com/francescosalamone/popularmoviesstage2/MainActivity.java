@@ -2,6 +2,7 @@ package com.francescosalamone.popularmoviesstage2;
 
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.francescosalamone.popularmoviesstage2.databinding.ActivityMainBinding;
 import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.francescosalamone.popularmoviesstage2.utility.JsonUtility;
 import com.francescosalamone.popularmoviesstage2.utility.NetworkUtility;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int MOVIE_LOADER = 1502;
     private int sortCode =0;
 
+    ActivityMainBinding mBinding;
+
     private PosterAdapter mPosterAdapter;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -45,19 +49,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView mRecyclerView = findViewById(R.id.rv_posters);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        //RecyclerView mRecyclerView = findViewById(R.id.rv_posters);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        mBinding.rvPosters.setLayoutManager(layoutManager);
+        mBinding.rvPosters.setHasFixedSize(true);
 
         mPosterAdapter = new PosterAdapter( this);
-        mRecyclerView.setAdapter(mPosterAdapter);
+        mBinding.rvPosters.setAdapter(mPosterAdapter);
 
         configureBottomNav();
 
 
-        MovieDbApiKey = getString(R.string.apiV3);
+        MovieDbApiKey = BuildConfig.apiV3;
 
         //swipeRefreshLayout refresh the page, it's good solution if I haven't some connection and I want to try again
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
