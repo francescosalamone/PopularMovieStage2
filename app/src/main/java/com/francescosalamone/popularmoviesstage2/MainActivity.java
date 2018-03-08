@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -39,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String movieDbApiKey;
     private static final int MOVIE_LOADER = 1502;
     public static final int DETAILS_INTENT_REQUEST = 65;
-    private static final int DEFAULT_POSITION_VALUE = -1;
     private int requestCode =0;
     private int idMovie = -1;
 
@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         mPosterAdapter.setPoster(moviesAsList);
+        getSupportLoaderManager().destroyLoader(MOVIE_LOADER);
     }
 
     private void closeOnError(){
@@ -190,9 +191,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == DETAILS_INTENT_REQUEST){
             if(resultCode == DetailActivity.UPDATED_OBJECT){
-                //TODO sistemare qui, in quanto al ritorno l'app crasha
-                int position = data.getIntExtra("Movie Position", DEFAULT_POSITION_VALUE);
-                Movie newMovie = data.getParcelableExtra("Movie");
+                Bundle bundle = data.getExtras();
+                Movie newMovie = bundle.getParcelable("Movie");
+                int position = bundle.getInt("MoviePosition");
                 mPosterAdapter.updateMovieTrailer(position, newMovie);
             }
         }

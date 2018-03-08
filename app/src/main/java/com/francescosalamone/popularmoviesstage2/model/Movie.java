@@ -42,7 +42,7 @@ public class Movie implements Parcelable{
         movieOverview = in.readString();
         usersRating = in.readDouble();
         releaseDate = in.readString();
-        in.readStringList(trailerKey);
+        in.readList(trailerKey, null);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {

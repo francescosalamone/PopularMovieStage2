@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         movie = intent.getParcelableExtra("Movie");
-        position = intent.getIntExtra("Movie Position", DEFAULT_POSITION_VALUE);
+        position = intent.getIntExtra("MoviePosition", DEFAULT_POSITION_VALUE);
         if(movie ==  null || position == -1){
             finish();
         }
@@ -109,7 +109,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -174,18 +174,25 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         movie.setTrailerKey(trailersAsList);
 
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Movie", movie);
+        bundle.putInt("MoviePosition", position);
         Intent intent = new Intent();
-        intent.putExtra("Movie", movie);
-        intent.putExtra("Movie Position", position);
+        intent.putExtras(bundle);
         setResult(UPDATED_OBJECT, intent);
-        finish();
 
-        Toast.makeText(this, "key: " + movie.getTrailerKey().get(0), Toast.LENGTH_SHORT).show();
+        getSupportLoaderManager().destroyLoader(TRAILER_LOADER);
     }
 
     private void closeOnError(){
         finish();
         Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 
     @Override
