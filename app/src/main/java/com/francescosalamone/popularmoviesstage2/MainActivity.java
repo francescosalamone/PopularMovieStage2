@@ -2,9 +2,11 @@ package com.francescosalamone.popularmoviesstage2;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.LoaderManager;
@@ -34,9 +36,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>
         , PosterAdapter.ItemClickListener {
 
-    private String MovieDbApiKey;
+    private String movieDbApiKey;
     private static final int MOVIE_LOADER = 1502;
-    private int sortCode =0;
+    public static final int DETAILS_INTENT_REQUEST = 65;
+    private static final int DEFAULT_POSITION_VALUE = -1;
+    private int requestCode =0;
+    private int idMovie = -1;
 
     ActivityMainBinding mBinding;
 
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         configureBottomNav();
 
 
-        MovieDbApiKey = BuildConfig.apiV3;
+        movieDbApiKey = BuildConfig.apiV3;
 
         //swipeRefreshLayout refresh the page, it's good solution if I haven't some connection and I want to try again
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
@@ -85,10 +90,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_top_rated:
-                        sortCode = 1;
+                        requestCode = 1;
                         break;
                     case R.id.action_popular:
-                        sortCode = 0;
+                        requestCode = 0;
                     default:
                         break;
                 }
@@ -129,10 +134,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return new AsyncTaskLoader<String>(this) {
             @Override
             public String loadInBackground() {
-                if(MovieDbApiKey == null || TextUtils.isEmpty(MovieDbApiKey))
+                if(movieDbApiKey == null || TextUtils.isEmpty(movieDbApiKey))
                     return null;
                 try{
-                    return NetworkUtility.getContentFromHttp(NetworkUtility.buildUrl(MovieDbApiKey, sortCode) );
+                    return NetworkUtility.getContentFromHttp(NetworkUtility.buildUrl(movieDbApiKey, requestCode, idMovie) );
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -153,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         List<Movie> moviesAsList = new ArrayList<>();
         try {
             moviesAsList = JsonUtility.parseMovieJson(httpResult);
+
         } catch (JSONException e){
             e.printStackTrace();
         }
@@ -177,6 +183,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onItemClick(int clickItemPosition) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == DETAILS_INTENT_REQUEST){
+            if(resultCode == DetailActivity.UPDATED_OBJECT){
+                //TODO sistemare qui, in quanto al ritorno l'app crasha
+                int position = data.getIntExtra("Movie Position", DEFAULT_POSITION_VALUE);
+                Movie newMovie = data.getParcelableExtra("Movie");
+                mPosterAdapter.updateMovieTrailer(position, newMovie);
+            }
+        }
 
     }
 }

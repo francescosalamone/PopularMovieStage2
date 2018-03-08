@@ -19,26 +19,40 @@ public class NetworkUtility {
     private final static String API_KEY = "api_key";
     private final static String MOST_POPULAR ="popular";
     private final static String TOP_RATED ="top_rated";
+    private final static String TRAILERS = "videos";
 
     /**
      * Build the URL used for get information about movies
      * @param apiKey The Api Key get from the Resource file TheMovieDbAPI.xml
-     * @param sortCode The type of sort, 0 = MOST_POPULAR, 1 = TOP_RATED
+     * @param requestCode The type of sort, 0 = MOST_POPULAR, 1 = TOP_RATED, 2 = TRAILERS, otherwise -1
+     * @param idMovie It contains the movie Id if the request is for trailers,
      * @return the url
      */
 
-    public static URL buildUrl (String apiKey, int sortCode){
-        String sortBy;
-        if(sortCode == 1){
-            sortBy = TOP_RATED;
-        } else {
-            sortBy = MOST_POPULAR;
+    public static URL buildUrl (String apiKey, int requestCode, int idMovie){
+        String typeOfRequest;
+        if(requestCode == 2){
+            typeOfRequest = TRAILERS;
+        } else if(requestCode == 1){
+            typeOfRequest = TOP_RATED;
+        } else{
+            typeOfRequest = MOST_POPULAR;
         }
 
-        Uri uri = Uri.parse(MOVIE_DB_URL).buildUpon()
-                .appendPath(sortBy)
-                .appendQueryParameter(API_KEY, apiKey)
-                .build();
+        Uri uri;
+
+        if(idMovie == -1) {
+            uri = Uri.parse(MOVIE_DB_URL).buildUpon()
+                    .appendPath(typeOfRequest)
+                    .appendQueryParameter(API_KEY, apiKey)
+                    .build();
+        } else {
+            uri = Uri.parse(MOVIE_DB_URL).buildUpon()
+                    .appendPath(Integer.toString(idMovie))
+                    .appendPath(typeOfRequest)
+                    .appendQueryParameter(API_KEY, apiKey)
+                    .build();
+        }
 
         URL url = null;
         try{

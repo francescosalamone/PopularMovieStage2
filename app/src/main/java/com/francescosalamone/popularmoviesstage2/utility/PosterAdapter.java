@@ -1,7 +1,10 @@
 package com.francescosalamone.popularmoviesstage2.utility;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.francescosalamone.popularmoviesstage2.DetailActivity;
+import com.francescosalamone.popularmoviesstage2.MainActivity;
 import com.francescosalamone.popularmoviesstage2.R;
 import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.squareup.picasso.Picasso;
@@ -66,7 +70,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
     private void launchDetailActivity(int position, Context context){
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("Movie", movies.get(position));
-        context.startActivity(intent);
+        intent.putExtra("Movie Position", position);
+        ((Activity)context).startActivityForResult(intent, MainActivity.DETAILS_INTENT_REQUEST);
 
     }
 
@@ -98,6 +103,11 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
     public void setPoster(List<Movie> movies){
         this.movies = movies;
         notifyDataSetChanged();
+    }
+
+
+    public void updateMovieTrailer(int position, Movie newMovie){
+        movies.set(position, newMovie);
     }
 }
 
