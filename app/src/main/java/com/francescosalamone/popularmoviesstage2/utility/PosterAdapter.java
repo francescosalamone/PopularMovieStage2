@@ -7,10 +7,13 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.francescosalamone.popularmoviesstage2.DetailActivity;
 import com.francescosalamone.popularmoviesstage2.MainActivity;
@@ -28,6 +31,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
 
     private List<Movie> movies;
     final private ItemClickListener clickListener;
+    private int count =0;
 
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w185";
@@ -70,9 +74,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
     private void launchDetailActivity(int position, Context context){
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("Movie", movies.get(position));
-        intent.putExtra("Movie Position", position);
+        intent.putExtra("MoviePosition", position);
         ((Activity)context).startActivityForResult(intent, MainActivity.DETAILS_INTENT_REQUEST);
-
+        count ++;
     }
 
     @Override
@@ -107,7 +111,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
 
 
     public void updateMovieTrailer(int position, Movie newMovie){
-        movies.set(position, newMovie);
+        this.movies.set(position, newMovie);
+        notifyItemChanged(position);
     }
 }
 
