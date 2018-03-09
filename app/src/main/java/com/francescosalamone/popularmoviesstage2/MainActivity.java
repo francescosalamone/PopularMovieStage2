@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        //RecyclerView mRecyclerView = findViewById(R.id.rv_posters);
-
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mBinding.rvPosters.setLayoutManager(layoutManager);
         mBinding.rvPosters.setHasFixedSize(true);

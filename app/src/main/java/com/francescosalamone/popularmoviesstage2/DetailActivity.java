@@ -14,9 +14,11 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,7 @@ import com.francescosalamone.popularmoviesstage2.databinding.ActivityDetailBindi
 import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.francescosalamone.popularmoviesstage2.utility.JsonUtility;
 import com.francescosalamone.popularmoviesstage2.utility.NetworkUtility;
-import com.francescosalamone.popularmoviesstage2.utility.PosterAdapter;
+import com.francescosalamone.popularmoviesstage2.utility.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -33,7 +35,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
+public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> ,
+TrailerAdapter.ItemClickListener{
 
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w342";
@@ -48,6 +51,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
     ActivityDetailBinding mBinding;
 
+    private TrailerAdapter mTrailerAdapter;
+
     private Movie movie = null;
 
 
@@ -57,6 +62,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         setContentView(R.layout.activity_detail);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        mBinding.rvTrailers.setLayoutManager(layoutManager);
+        //mBinding.rvTrailers.setHasFixedSize(true);
+
+        mTrailerAdapter = new TrailerAdapter(this);
+        mBinding.rvTrailers.setAdapter(mTrailerAdapter);
 
         movieDbApiKey = BuildConfig.apiV3;
 
@@ -74,10 +87,14 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
             finish();
         }
 
+        getSupportActionBar().setTitle(movie.getOriginalTitle());
+
         //Check if already exist the trailers, if no new http request is needed
         if(movie.getTrailerKey().isEmpty()){
             idMovie = movie.getIdMovie();
             updateTrailers();
+        } else {
+            mTrailerAdapter.setTrailers(movie.getTrailerKey());
         }
 
         populateUI(movie);
@@ -126,7 +143,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         mBinding.titleTv.setText(movie.getOriginalTitle());
         mBinding.overviewTv.setText(movie.getMovieOverview());
-        mBinding.ratingTv.setText(String.valueOf(movie.getUsersRating()));
+        mBinding.ratingRb.setRating((float) (movie.getUsersRating()/2));
         mBinding.releaseDateTv.setText(String.valueOf(movie.getReleaseDate()));
 
     }
@@ -168,9 +185,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         if(trailersAsList == null || trailersAsList.isEmpty()){
-            closeOnError();
             return;
         }
+
+        mTrailerAdapter.setTrailers(trailersAsList);
 
         movie.setTrailerKey(trailersAsList);
 
@@ -184,19 +202,13 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         getSupportLoaderManager().destroyLoader(TRAILER_LOADER);
     }
 
-    private void closeOnError(){
-        finish();
-        Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
-
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
+
+    }
+
+    @Override
+    public void onItemClick(int clickItemPosition) {
 
     }
 }

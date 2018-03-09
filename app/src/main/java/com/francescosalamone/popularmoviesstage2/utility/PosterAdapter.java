@@ -31,7 +31,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
 
     private List<Movie> movies;
     final private ItemClickListener clickListener;
-    private int count =0;
 
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w185";
@@ -76,7 +75,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
         intent.putExtra("Movie", movies.get(position));
         intent.putExtra("MoviePosition", position);
         ((Activity)context).startActivityForResult(intent, MainActivity.DETAILS_INTENT_REQUEST);
-        count ++;
     }
 
     @Override
@@ -94,7 +92,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if(null == movies)
+        if(null == movies || movies.isEmpty())
             return 0;
         else
             return movies.size();
@@ -111,8 +109,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
 
 
     public void updateMovieTrailer(int position, Movie newMovie){
-        this.movies.set(position, newMovie);
-        notifyItemChanged(position);
+        if(this.movies != null) {
+            this.movies.set(position, newMovie);
+            notifyItemChanged(position);
+        }
     }
 }
 
