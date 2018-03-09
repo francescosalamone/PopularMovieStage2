@@ -3,36 +3,46 @@ package com.francescosalamone.popularmoviesstage2.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by Alpha on 18/02/2018.
  */
 
 public class Movie implements Parcelable{
+    private int idMovie;
     private String originalTitle;
     private String posterPath;
     private String movieOverview;
     private double usersRating;
     private String releaseDate;
+    private List<String> trailerKey = new ArrayList<>();
 
     public Movie(){
 
     }
 
-    public Movie(String originalTitle, String posterPath, String movieOverview, double usersRating, String releaseDate){
+    public Movie(int idMovie, String originalTitle, String posterPath, String movieOverview,
+                 double usersRating, String releaseDate, List<String> trailerKey){
+        this.idMovie = idMovie;
         this.originalTitle = originalTitle;
         this.posterPath = posterPath;
         this.movieOverview = movieOverview;
         this.usersRating = usersRating;
         this.releaseDate = releaseDate;
+        this.trailerKey = trailerKey;
     }
 
     protected Movie(Parcel in) {
+        idMovie = in.readInt();
         originalTitle = in.readString();
         posterPath = in.readString();
         movieOverview = in.readString();
         usersRating = in.readDouble();
         releaseDate = in.readString();
+        in.readList(trailerKey, null);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -46,6 +56,10 @@ public class Movie implements Parcelable{
             return new Movie[size];
         }
     };
+
+    public int getIdMovie(){ return idMovie; }
+
+    public void setIdMovie(int idMovie) { this.idMovie = idMovie; }
 
     public String getOriginalTitle(){
         return originalTitle;
@@ -87,6 +101,10 @@ public class Movie implements Parcelable{
         this.releaseDate = releaseDate;
     }
 
+    public List<String> getTrailerKey() { return trailerKey; }
+
+    public void setTrailerKey(List<String> trailerKey) { this.trailerKey = trailerKey; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,10 +112,12 @@ public class Movie implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(idMovie);
         parcel.writeString(originalTitle);
         parcel.writeString(posterPath);
         parcel.writeString(movieOverview);
         parcel.writeDouble(usersRating);
         parcel.writeString(releaseDate);
+        parcel.writeList(trailerKey);
     }
 }

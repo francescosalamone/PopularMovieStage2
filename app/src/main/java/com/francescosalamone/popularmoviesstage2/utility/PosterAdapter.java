@@ -1,15 +1,22 @@
 package com.francescosalamone.popularmoviesstage2.utility;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.francescosalamone.popularmoviesstage2.DetailActivity;
+import com.francescosalamone.popularmoviesstage2.MainActivity;
 import com.francescosalamone.popularmoviesstage2.R;
 import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.squareup.picasso.Picasso;
@@ -66,8 +73,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
     private void launchDetailActivity(int position, Context context){
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra("Movie", movies.get(position));
-        context.startActivity(intent);
-
+        intent.putExtra("MoviePosition", position);
+        ((Activity)context).startActivityForResult(intent, MainActivity.DETAILS_INTENT_REQUEST);
     }
 
     @Override
@@ -85,7 +92,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if(null == movies)
+        if(null == movies || movies.isEmpty())
             return 0;
         else
             return movies.size();
@@ -98,6 +105,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.ViewHolder
     public void setPoster(List<Movie> movies){
         this.movies = movies;
         notifyDataSetChanged();
+    }
+
+
+    public void updateMovieTrailer(int position, Movie newMovie){
+        if(this.movies != null) {
+            this.movies.set(position, newMovie);
+            notifyItemChanged(position);
+        }
     }
 }
 
