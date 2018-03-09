@@ -2,8 +2,11 @@ package com.francescosalamone.popularmoviesstage2;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.LoaderManager;
@@ -15,9 +18,11 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.francescosalamone.popularmoviesstage2.databinding.ActivityMainBinding;
 import com.francescosalamone.popularmoviesstage2.model.Movie;
 import com.francescosalamone.popularmoviesstage2.utility.JsonUtility;
 import com.francescosalamone.popularmoviesstage2.utility.NetworkUtility;
@@ -32,9 +37,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>
         , PosterAdapter.ItemClickListener {
 
-    private String MovieDbApiKey;
+    private String movieDbApiKey;
     private static final int MOVIE_LOADER = 1502;
-    private int sortCode =0;
+    public static final int DETAILS_INTENT_REQUEST = 65;
+    private int requestCode =0;
+    private int idMovie = -1;
+
+    ActivityMainBinding mBinding;
 
     private PosterAdapter mPosterAdapter;
 
@@ -45,19 +54,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView mRecyclerView = findViewById(R.id.rv_posters);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        mBinding.rvPosters.setLayoutManager(layoutManager);
+        mBinding.rvPosters.setHasFixedSize(true);
 
         mPosterAdapter = new PosterAdapter( this);
-        mRecyclerView.setAdapter(mPosterAdapter);
+        mBinding.rvPosters.setAdapter(mPosterAdapter);
 
         configureBottomNav();
 
 
-        MovieDbApiKey = getString(R.string.apiV3);
+        movieDbApiKey = BuildConfig.apiV3;
 
         //swipeRefreshLayout refresh the page, it's good solution if I haven't some connection and I want to try again
         swipeRefreshLayout = findViewById(R.id.swipeRefresh);
@@ -79,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_top_rated:
-                        sortCode = 1;
+                        requestCode = 1;
                         break;
                     case R.id.action_popular:
-                        sortCode = 0;
+                        requestCode = 0;
                     default:
                         break;
                 }
@@ -123,10 +132,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return new AsyncTaskLoader<String>(this) {
             @Override
             public String loadInBackground() {
-                if(MovieDbApiKey == null || TextUtils.isEmpty(MovieDbApiKey))
+                if(movieDbApiKey == null || TextUtils.isEmpty(movieDbApiKey))
                     return null;
                 try{
-                    return NetworkUtility.getContentFromHttp(NetworkUtility.buildUrl(MovieDbApiKey, sortCode) );
+                    return NetworkUtility.getContentFromHttp(NetworkUtility.buildUrl(movieDbApiKey, requestCode, idMovie) );
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -147,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         List<Movie> moviesAsList = new ArrayList<>();
         try {
             moviesAsList = JsonUtility.parseMovieJson(httpResult);
+
         } catch (JSONException e){
             e.printStackTrace();
         }
@@ -157,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         mPosterAdapter.setPoster(moviesAsList);
+        getSupportLoaderManager().destroyLoader(MOVIE_LOADER);
     }
 
     private void closeOnError(){
@@ -171,6 +182,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onItemClick(int clickItemPosition) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == DETAILS_INTENT_REQUEST){
+            if(resultCode == DetailActivity.UPDATED_OBJECT){
+                Bundle bundle = data.getExtras();
+                Movie newMovie = bundle.getParcelable("Movie");
+                int position = bundle.getInt("MoviePosition");
+                mPosterAdapter.updateMovieTrailer(position, newMovie);
+            }
+        }
 
     }
 }
