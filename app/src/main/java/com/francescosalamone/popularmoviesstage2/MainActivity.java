@@ -102,13 +102,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void updateMovieList(){
-        //I check, before the HTTP request, if we have an internet connection available
-        ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
+        boolean isConnected = NetworkUtility.checkInternetConnection(this);
 
         if(isConnected) {
             try {

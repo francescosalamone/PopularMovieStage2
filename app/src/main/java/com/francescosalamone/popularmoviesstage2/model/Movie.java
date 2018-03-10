@@ -19,13 +19,14 @@ public class Movie implements Parcelable{
     private double usersRating;
     private String releaseDate;
     private List<String> trailerKey = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     public Movie(){
 
     }
 
     public Movie(int idMovie, String originalTitle, String posterPath, String movieOverview,
-                 double usersRating, String releaseDate, List<String> trailerKey){
+                 double usersRating, String releaseDate, List<String> trailerKey, List<Review> reviews){
         this.idMovie = idMovie;
         this.originalTitle = originalTitle;
         this.posterPath = posterPath;
@@ -33,6 +34,7 @@ public class Movie implements Parcelable{
         this.usersRating = usersRating;
         this.releaseDate = releaseDate;
         this.trailerKey = trailerKey;
+        this.reviews = reviews;
     }
 
     protected Movie(Parcel in) {
@@ -43,6 +45,7 @@ public class Movie implements Parcelable{
         usersRating = in.readDouble();
         releaseDate = in.readString();
         in.readList(trailerKey, null);
+        in.readTypedList(reviews, Review.CREATOR);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -105,6 +108,10 @@ public class Movie implements Parcelable{
 
     public void setTrailerKey(List<String> trailerKey) { this.trailerKey = trailerKey; }
 
+    public List<Review> getReviews() { return reviews; }
+
+    public void setReviews(List<Review> reviews) { this.reviews = reviews; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -119,5 +126,6 @@ public class Movie implements Parcelable{
         parcel.writeDouble(usersRating);
         parcel.writeString(releaseDate);
         parcel.writeList(trailerKey);
+        parcel.writeTypedList(reviews);
     }
 }
