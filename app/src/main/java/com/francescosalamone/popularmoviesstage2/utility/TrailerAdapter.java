@@ -33,7 +33,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     }
 
     public interface ItemClickListener{
-        void onItemClick(int clickItemPosition);
+        void onTrailerClick(int clickItemPosition);
     }
 
     @NonNull
@@ -82,7 +82,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         @Override
         public void onClick(View view) {
             int clicked = getAdapterPosition();
-            clickListener.onItemClick(clicked);
+            clickListener.onTrailerClick(clicked);
 
             openYouTubeApp(clicked, trailerIv.getContext());
         }

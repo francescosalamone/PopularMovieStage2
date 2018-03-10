@@ -21,7 +21,7 @@ android {
         mavenCentral()
     }
 
-    buildTypes.each{
+    buildTypes.each {
         it.buildConfigField 'String', 'apiV3', TheMovieDbApi
     }
 

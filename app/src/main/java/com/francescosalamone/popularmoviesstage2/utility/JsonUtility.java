@@ -1,12 +1,12 @@
 package com.francescosalamone.popularmoviesstage2.utility;
 
 import com.francescosalamone.popularmoviesstage2.model.Movie;
+import com.francescosalamone.popularmoviesstage2.model.Review;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,29 @@ import java.util.List;
  */
 
 public class JsonUtility {
+
+    public static List<Review> parseReviewJson (String json) throws JSONException {
+        final String REVIEW_COMMENT = "content";
+        final String REVIEW_AUTHOR = "author";
+        final String REVIEW_RESULT = "results";
+
+        JSONObject reviewJson = new JSONObject(json);
+        if(reviewJson.has(REVIEW_RESULT)){
+            JSONArray resultsAsArray = reviewJson.optJSONArray(REVIEW_RESULT);
+            List<Review> reviewAsList = new ArrayList<>();
+
+            for(int i=0; i<resultsAsArray.length(); i++){
+                JSONObject resultObj = new JSONObject(resultsAsArray.getString(i));
+                Review review = new Review();
+                review.setAuthor(resultObj.optString(REVIEW_AUTHOR));
+                review.setComment(resultObj.optString(REVIEW_COMMENT));
+
+                reviewAsList.add(review);
+            }
+            return reviewAsList;
+        }
+        return null;
+    }
 
     public static List<String> parseTrailerJson (String json) throws JSONException {
         final String TRAILER_KEY = "key";
@@ -53,7 +76,6 @@ public class JsonUtility {
             for(int i = 0; i < resultsAsArray.length(); i++){
                 JSONObject resultsObj = new JSONObject(resultsAsArray.getString(i));
                 Movie movie = new Movie();
-                List<String> trailers = new ArrayList<>();
                 movie.setIdMovie(resultsObj.optInt(MOVIE_ID));
                 movie.setOriginalTitle(resultsObj.optString(MOVIE_TITLE));
                 movie.setPosterPath(resultsObj.optString(MOVIE_POSTER_PATH));
