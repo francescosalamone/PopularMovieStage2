@@ -1,5 +1,8 @@
 package com.francescosalamone.popularmoviesstage2.utility;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 
 import java.io.IOException;
@@ -20,18 +23,21 @@ public class NetworkUtility {
     private final static String MOST_POPULAR ="popular";
     private final static String TOP_RATED ="top_rated";
     private final static String TRAILERS = "videos";
+    private final static String REVIEWS = "reviews";
 
     /**
      * Build the URL used for get information about movies
      * @param apiKey The Api Key get from the Resource file TheMovieDbAPI.xml
-     * @param requestCode The type of sort, 0 = MOST_POPULAR, 1 = TOP_RATED, 2 = TRAILERS, otherwise -1
+     * @param requestCode The type of sort, 0 = MOST_POPULAR, 1 = TOP_RATED, 2 = TRAILERS, 3 = REVIEWS, otherwise -1
      * @param idMovie It contains the movie Id if the request is for trailers,
      * @return the url
      */
 
     public static URL buildUrl (String apiKey, int requestCode, int idMovie){
         String typeOfRequest;
-        if(requestCode == 2){
+        if(requestCode == 3){
+            typeOfRequest = REVIEWS;
+        } else if(requestCode == 2){
             typeOfRequest = TRAILERS;
         } else if(requestCode == 1){
             typeOfRequest = TOP_RATED;
@@ -92,5 +98,20 @@ public class NetworkUtility {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    /**
+     * Check if the device has internet connection enabled
+     * @param context
+     * @return a boolean value that says if is connected or not
+     */
+    public static boolean checkInternetConnection (Context context){
+        //I check, before the HTTP request, if we have an internet connection available
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }

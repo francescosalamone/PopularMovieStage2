@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,8 +25,10 @@ import android.widget.Toast;
 
 import com.francescosalamone.popularmoviesstage2.databinding.ActivityDetailBinding;
 import com.francescosalamone.popularmoviesstage2.model.Movie;
+import com.francescosalamone.popularmoviesstage2.model.Review;
 import com.francescosalamone.popularmoviesstage2.utility.JsonUtility;
 import com.francescosalamone.popularmoviesstage2.utility.NetworkUtility;
+import com.francescosalamone.popularmoviesstage2.utility.ReviewAdapter;
 import com.francescosalamone.popularmoviesstage2.utility.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -36,22 +39,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> ,
-TrailerAdapter.ItemClickListener{
+ReviewAdapter.ItemClickListener, TrailerAdapter.ItemClickListener{
 
     private static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_WIDTH_URL = "w342";
     private static final int TRAILER_LOADER = 2016;
+    private static final int REVIEWS_LOADER = 1752;
     public static final int UPDATED_OBJECT = 188;
     private static final int DEFAULT_POSITION_VALUE = -1;
 
     private String movieDbApiKey;
-    private int requestCode = 2;
+    private int requestCode = 0;
     private int idMovie = -1;
     private int position;
+    private int numberOfLoaderFinished = 0;
 
     ActivityDetailBinding mBinding;
 
     private TrailerAdapter mTrailerAdapter;
+    private ReviewAdapter mReviewAdapter;
 
     private Movie movie = null;
 
@@ -63,10 +69,16 @@ TrailerAdapter.ItemClickListener{
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+        LinearLayoutManager layoutManagerTrailers = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false);
-        mBinding.rvTrailers.setLayoutManager(layoutManager);
-        //mBinding.rvTrailers.setHasFixedSize(true);
+        mBinding.rvTrailers.setLayoutManager(layoutManagerTrailers);
+
+        LinearLayoutManager layoutManagerReviews = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        mBinding.rvReviews.setLayoutManager(layoutManagerReviews);
+
+        mReviewAdapter = new ReviewAdapter(this);
+        mBinding.rvReviews.setAdapter(mReviewAdapter);
 
         mTrailerAdapter = new TrailerAdapter(this);
         mBinding.rvTrailers.setAdapter(mTrailerAdapter);
@@ -92,32 +104,56 @@ TrailerAdapter.ItemClickListener{
         //Check if already exist the trailers, if no new http request is needed
         if(movie.getTrailerKey().isEmpty()){
             idMovie = movie.getIdMovie();
-            updateTrailers();
+            requestCode = 2;
+            updateTrailers(requestCode);
         } else {
             mTrailerAdapter.setTrailers(movie.getTrailerKey());
+        }
+
+        //Check if already exist the reviews object, if no new http request is needed
+        if(movie.getReviews().isEmpty()){
+            idMovie = movie.getIdMovie();
+            requestCode = 3;
+            updateReviews(requestCode);
+        } else {
+            mReviewAdapter.setReviews(movie.getReviews());
+            mReviewAdapter.setTitle(movie.getOriginalTitle());
         }
 
         populateUI(movie);
 
     }
 
-    private void updateTrailers(){
-        //I check, before the HTTP request, if we have an internet connection available
-        ConnectivityManager cm =
-                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+    private void updateReviews(int request){
+        boolean isConnected = NetworkUtility.checkInternetConnection(this);
+        Bundle bundle = new Bundle();
+        bundle.putInt("requestCode", request);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
+        if(isConnected){
+            try{
+                if(getSupportLoaderManager().getLoader(REVIEWS_LOADER).isStarted())
+                    getSupportLoaderManager().restartLoader(REVIEWS_LOADER, bundle, this);
+            } catch (Exception e){
+                e.printStackTrace();
+            } finally {
+                getSupportLoaderManager().initLoader(REVIEWS_LOADER, bundle, this);
+            }
+        }
+    }
+
+    private void updateTrailers(int request){
+        boolean isConnected = NetworkUtility.checkInternetConnection(this);
+        Bundle bundle = new Bundle();
+        bundle.putInt("requestCode", request);
 
         if(isConnected) {
             try {
                 if (getSupportLoaderManager().getLoader(TRAILER_LOADER).isStarted())
-                    getSupportLoaderManager().restartLoader(TRAILER_LOADER, null, this);
+                    getSupportLoaderManager().restartLoader(TRAILER_LOADER, bundle, this);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                getSupportLoaderManager().initLoader(TRAILER_LOADER, null, this);
+                getSupportLoaderManager().initLoader(TRAILER_LOADER, bundle, this);
             }
         }
     }
@@ -150,7 +186,7 @@ TrailerAdapter.ItemClickListener{
 
     @NonNull
     @Override
-    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
+    public Loader<String> onCreateLoader(int id, @Nullable final Bundle args) {
         return new AsyncTaskLoader<String>(this) {
             @Nullable
             @Override
@@ -158,7 +194,8 @@ TrailerAdapter.ItemClickListener{
                 if(movieDbApiKey == null || TextUtils.isEmpty(movieDbApiKey))
                     return null;
                 try{
-                    return NetworkUtility.getContentFromHttp(NetworkUtility.buildUrl(movieDbApiKey, requestCode, idMovie) );
+                    int request = args.getInt("requestCode");
+                    return NetworkUtility.getContentFromHttp(NetworkUtility.buildUrl(movieDbApiKey, request, idMovie) );
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -176,30 +213,55 @@ TrailerAdapter.ItemClickListener{
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
 
-        List<String> trailersAsList = new ArrayList<>();
-        try {
-            trailersAsList = JsonUtility.parseTrailerJson(data);
+        if(loader.getId() == TRAILER_LOADER){
+            numberOfLoaderFinished ++;
+            List<String> trailersAsList = new ArrayList<>();
+            try {
+                trailersAsList = JsonUtility.parseTrailerJson(data);
 
-        } catch (JSONException e){
-            e.printStackTrace();
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+
+            if(trailersAsList == null || trailersAsList.isEmpty()){
+                return;
+            }
+
+            mTrailerAdapter.setTrailers(trailersAsList);
+
+            movie.setTrailerKey(trailersAsList);
+
+            getSupportLoaderManager().destroyLoader(TRAILER_LOADER);
+
+        } else if(loader.getId() == REVIEWS_LOADER){
+            numberOfLoaderFinished++;
+            List<Review> reviewAsList = new ArrayList<>();
+            try{
+                reviewAsList = JsonUtility.parseReviewJson(data);
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+
+            if(reviewAsList == null || reviewAsList.isEmpty()){
+                return;
+            }
+
+            mReviewAdapter.setReviews(reviewAsList);
+            mReviewAdapter.setTitle(movie.getOriginalTitle());
+            movie.setReviews(reviewAsList);
+            getSupportLoaderManager().destroyLoader(REVIEWS_LOADER);
         }
 
-        if(trailersAsList == null || trailersAsList.isEmpty()){
-            return;
+        //If all loaders finished
+        if(numberOfLoaderFinished == 2){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("Movie", movie);
+            bundle.putInt("MoviePosition", position);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            setResult(UPDATED_OBJECT, intent);
         }
 
-        mTrailerAdapter.setTrailers(trailersAsList);
-
-        movie.setTrailerKey(trailersAsList);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("Movie", movie);
-        bundle.putInt("MoviePosition", position);
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        setResult(UPDATED_OBJECT, intent);
-
-        getSupportLoaderManager().destroyLoader(TRAILER_LOADER);
     }
 
     @Override
@@ -208,7 +270,12 @@ TrailerAdapter.ItemClickListener{
     }
 
     @Override
-    public void onItemClick(int clickItemPosition) {
+    public void onTrailerClick(int clickItemPosition) {
+
+    }
+
+    @Override
+    public void onReviewClick(int clickItemPosition) {
 
     }
 }
