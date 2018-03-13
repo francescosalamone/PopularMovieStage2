@@ -10,7 +10,7 @@ import com.francescosalamone.popularmoviesstage2.databinding.ActivityReviewBindi
 
 public class ReviewActivity extends AppCompatActivity {
 
-    ActivityReviewBinding mBinding;
+    private ActivityReviewBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
