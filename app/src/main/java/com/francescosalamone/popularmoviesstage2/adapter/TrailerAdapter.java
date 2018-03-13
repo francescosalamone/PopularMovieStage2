@@ -1,4 +1,4 @@
-package com.francescosalamone.popularmoviesstage2.utility;
+package com.francescosalamone.popularmoviesstage2.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -93,7 +93,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public void openYouTubeApp(int position, Context context){
+    private void openYouTubeApp(int position, Context context){
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(YOUTUBE_BASE_URL + trailers.get(position)));
         context.startActivity(intent);

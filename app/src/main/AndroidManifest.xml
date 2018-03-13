@@ -24,9 +24,15 @@
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"></meta-data>
+                android:value=".MainActivity" />
         </activity>
-        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".ReviewActivity" />
+        
+        <provider
+            android:authorities="com.francescosalamone.popularmoviesstage2"
+            android:name="com.francescosalamone.popularmoviesstage2.data.FavoritesContentProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
