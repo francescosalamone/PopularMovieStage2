@@ -25,6 +25,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_trailer"
         app:layout_constraintEnd_toEndOf="@+id/iv_trailer"
         app:layout_constraintStart_toStartOf="@+id/iv_trailer"
-        app:layout_constraintTop_toTopOf="@+id/iv_trailer"/>
+        app:layout_constraintTop_toTopOf="@+id/iv_trailer"
+        android:contentDescription="@string/favorite_button" />
 
 </android.support.constraint.ConstraintLayout>

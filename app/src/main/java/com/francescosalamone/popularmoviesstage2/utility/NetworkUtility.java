@@ -24,22 +24,27 @@ public class NetworkUtility {
     private final static String TOP_RATED ="top_rated";
     private final static String TRAILERS = "videos";
     private final static String REVIEWS = "reviews";
+    public final static int REQUEST_MOST_POPULAR = 0;
+    public final static int REQUEST_TOP_RATED = 1;
+    public final static int REQUEST_TRAILERS = 2;
+    public final static int REQUEST_REVIEWS = 3;
+    public final static int REQUEST_FAVORITES = 4;
 
     /**
      * Build the URL used for get information about movies
      * @param apiKey The Api Key get from the Resource file TheMovieDbAPI.xml
-     * @param requestCode The type of sort, 0 = MOST_POPULAR, 1 = TOP_RATED, 2 = TRAILERS, 3 = REVIEWS, otherwise -1
+     * @param requestCode The type of sort, 0 = MOST_POPULAR, 1 = TOP_RATED, 2 = TRAILERS, 3 = REVIEWS, 4 = FAVORITES
      * @param idMovie It contains the movie Id if the request is for trailers,
      * @return the url
      */
 
     public static URL buildUrl (String apiKey, int requestCode, int idMovie){
         String typeOfRequest;
-        if(requestCode == 3){
+        if(requestCode == REQUEST_REVIEWS){
             typeOfRequest = REVIEWS;
-        } else if(requestCode == 2){
+        } else if(requestCode == REQUEST_TRAILERS){
             typeOfRequest = TRAILERS;
-        } else if(requestCode == 1){
+        } else if(requestCode == REQUEST_TOP_RATED){
             typeOfRequest = TOP_RATED;
         } else{
             typeOfRequest = MOST_POPULAR;

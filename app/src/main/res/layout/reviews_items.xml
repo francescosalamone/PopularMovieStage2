@@ -7,8 +7,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="6dp"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="20dp">
+    android:layout_marginTop="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,13 +19,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_comment"
-            android:maxLines="5"/>
+            android:maxLines="5"
+            android:minLines="5"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_label_readMore"
-            android:text="[read more]"
+            android:text="@string/read_more"
             android:layout_gravity="end"
             android:textColor="@color/colorAccent"
             android:textStyle="italic|bold"/>
